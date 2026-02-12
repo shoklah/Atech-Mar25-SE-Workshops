@@ -1,4 +1,6 @@
+
 #include <stdio.h>
+#include <stdlib.h>
 
 int is_triangle(int a, int b, int c)
 {
@@ -7,20 +9,42 @@ int is_triangle(int a, int b, int c)
 //                    s2     m4       e7
 //int array[] = {1, 2, 3, 5, 6, 7, 8, 11};                        7
 int binary_search_value(int* array, int start, int end, int target_value){
-    int middle = start + (int)((end-start)/2); // 2+ (2.5 -> 2)
-    if(array[middle] == target_value)
-        return middle;
-    if(array[middle] > target_value)
+    int middle = (int)(start + (int)((end-start)/2)); // 2+ (2.5 -> 2)
+    printf("\nmiddle:%d\n",middle);
+    if(middle == start && middle<end)
+        middle++;
+    if(array[middle] >= target_value && array[middle-1]<target_value)
+        // assume that we don't have any duplicates and return previous index from found value
+        return middle - 1;
+    else if(array[middle] > target_value)
         return binary_search_value(array,start,middle,target_value);
     else
         return binary_search_value(array,middle,end,target_value);
 }
 
+int iterative_binary_search_value(int *array, int start, int end, int target_value) {
+    int middle = start + (int)((end-start)/2); // 2+ (2.5 -> 2)
+
+    while (array[middle] != target_value) {
+        if (array[middle] > target_value) {
+            end = middle;
+        } else {
+            start = middle;
+        }
+    }
+
+    return middle;
+}
+
+int compare(const void *a, const void *b) {
+    return (*(int *)a - *(int *)b);
+}
+
 int main()
 {
-    // int arr[] = {4, 6, 3, 7};
-    // int arr[] = {10, 21, 22, 100, 101, 200, 300};
-    int arr[] = {1, 2, 3};
+    int arr[] = {4, 6, 3, 7};
+    //int arr[] = {10, 21, 22, 100, 101, 200, 300};
+    // int arr[] = {1, 2, 3};
     int arr_size = sizeof(arr) / sizeof(int);
     int triangles_count = 0;
     int first_index = 0;
@@ -40,14 +64,19 @@ int main()
     //     second_index = first_index+1;
     //     third_index = second_index+1;
     // }
-    for (int k = 0; k < 7; k++)
+
+    qsort(arr, arr_size, sizeof(int), compare);
+    for(int i =0;i<arr_size;i++)
+        printf("%d : %d\n",i,arr[i]);
+    for (int k = 0; k < arr_size - 3; k++)
     {
-        for (int j = k + 1; j < 8; j++)
+        for (int j = k + 1; j < arr_size - 2; j++)
         {
-            for (int i = j + 1; i < 9; i++)
-            {
-                triangles_count +=is_triangle(arr[k], arr[j], arr[i]);
-            }
+            int target_value = arr[k] + arr[j];
+            int found_value = binary_search_value(arr, j, arr_size-1, target_value);
+            printf("\nfound_value:%d\n",found_value);
+            if(found_value)
+                triangles_count += found_value - j + 1;
         }
     }
 
