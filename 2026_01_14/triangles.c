@@ -40,6 +40,28 @@ int compare(const void *a, const void *b) {
     return (*(int *)a - *(int *)b);
 }
 
+
+//int arr[] = { 22, 100, 101, 200 200 200 500};
+//               0   1    2    3   4   5   6
+int binary_iterative_search_v2(int* array,int array_size,int target_edge){
+    int start =0;
+    int end = array_size-1;
+    if(array[end]<target_edge){
+        return end;
+    }
+    while(start!=end){
+        int middle =(int)((end + start)/2);
+        printf("\nstart: %d\nmiddle: %d\nend:%d",start,middle,end);
+        if(target_edge>array[middle]){
+            start = middle + 1;
+        } else {
+            end = middle;
+        }
+    }
+    printf("\n6\n");
+    return --start;
+}
+
 int main()
 {
     int arr[] = {4, 6, 3, 7};
@@ -68,19 +90,15 @@ int main()
     qsort(arr, arr_size, sizeof(int), compare);
     for(int i =0;i<arr_size;i++)
         printf("%d : %d\n",i,arr[i]);
-    for (int k = 0; k < arr_size - 3; k++)
+    for (int k = 0; k < arr_size - 2; k++)
     {
-        for (int j = k + 1; j < arr_size - 2; j++)
+        for (int j = k + 1; j < arr_size - 1; j++)
         {
-            int target_value = arr[k] + arr[j];
-            int found_value = binary_search_value(arr, j, arr_size-1, target_value);
-            printf("\nfound_value:%d\n",found_value);
-            if(found_value)
-                triangles_count += found_value - j + 1;
+            triangles_count=binary_iterative_search_v2(arr,arr_size,arr[j]+arr[k]);
+            printf("index we are looking for: %d\n", triangles_count);
         }
     }
 
-    printf("Triangles count: %d\n", triangles_count);
     return 0;
 }
 
