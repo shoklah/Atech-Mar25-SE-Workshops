@@ -62,11 +62,39 @@ int binary_iterative_search_v2(int* array,int array_size,int target_edge){
     return --start;
 }
 
+int count_step(int* array,int start,int end){
+    int count = 0;
+    int middle = end-1;
+    do{
+    printf("start: %d; middle: %d; end: %d\n",array[start],array[middle],array[end]);
+    if(is_triangle(array[start],array[middle],array[end])){
+        printf("is a triangle: %d more found\n\n", middle-start);
+        count+=(middle-start);
+        middle--;
+    }else{
+        printf("not a triangle\n\n");
+        start++;
+    }
+    }while(middle>start);
+    return count;
+}
+
+int count_triangles_v3(int* array,int array_size){
+    int count = 0;
+    int start =0;
+    int end = array_size-1;
+    while(end-start>1){
+        count+=count_step(array,start,end);
+        end--;
+    }
+    return count;
+}
+
 int main()
 {
-    int arr[] = {4, 6, 3, 7};
-    //int arr[] = {10, 21, 22, 100, 101, 200, 300};
-    // int arr[] = {1, 2, 3};
+    // int arr[] = {4, 6, 3, 7}; // {3, 4, 6, 7} ==> 3 triangles
+    // int arr[] = {10, 21, 22, 100, 101, 200, 300}; // {10, 21, 22, 100, 101, 200, 300} ==> 6 triangles
+    int arr[] = {1, 2, 3}; // {1, 2, 3} ==> 0 triangle
     int arr_size = sizeof(arr) / sizeof(int);
     int triangles_count = 0;
     int first_index = 0;
@@ -88,17 +116,18 @@ int main()
     // }
 
     qsort(arr, arr_size, sizeof(int), compare);
-    for(int i =0;i<arr_size;i++)
-        printf("%d : %d\n",i,arr[i]);
-    for (int k = 0; k < arr_size - 2; k++)
-    {
-        for (int j = k + 1; j < arr_size - 1; j++)
-        {
-            triangles_count=binary_iterative_search_v2(arr,arr_size,arr[j]+arr[k]);
-            printf("index we are looking for: %d\n", triangles_count);
-        }
-    }
-
+    // for(int i =0;i<arr_size;i++)
+    //     printf("%d : %d\n",i,arr[i]);
+    // for (int k = 0; k < arr_size - 2; k++)
+    // {
+    //     for (int j = k + 1; j < arr_size - 1; j++)
+    //     {
+    //         triangles_count=binary_iterative_search_v2(arr,arr_size,arr[j]+arr[k]);
+    //         printf("index we are looking for: %d\n", triangles_count);
+    //     }
+    // }
+    triangles_count = count_triangles_v3(arr,arr_size);
+    printf("\nresult: %d\n",triangles_count);
     return 0;
 }
 
